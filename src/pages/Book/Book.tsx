@@ -13,13 +13,14 @@ const Book = () => {
   const navigate = useNavigate();
   useEffect(() => {
     if (localStorage.getItem("token")) {
-      store.checkAuth().then(() => {
-        store.getBooks();
-      });
+      store.checkAuth()
     }
   }, []);
 
-
+  useEffect(()=>{
+    store.getBooks();
+  }, [store])
+  
   if (store.isLoading) {
     return (
       <div className="text-center">
