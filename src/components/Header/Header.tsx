@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Context } from "../..";
 import { Link } from "react-router-dom";
 import { Button, Spinner } from "react-bootstrap";
@@ -8,21 +8,32 @@ import Placeholder from "../UI/Placeholder/Placeholder";
 const Header = () => {
   const { store } = useContext(Context);
 
+  //   useEffect(() => {
+  //     if (localStorage.getItem("token")) {f
+  //       store.checkAuth();
+  //     }
+  //   }, []);
+
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    if (localStorage.getItem("token")) {
-      store.checkAuth();
+    async function checkAuthentication() {
+      if (localStorage.getItem("token")) {
+        try {
+          await store.checkAuth();
+        } catch (e) {
+          console.log(e);
+        }
+      }
+      setIsLoading(false);
     }
-  }, []);
 
-  if (store.isLoading) {
-    return (
-      <div>
-        <Placeholder />
-      </div>
-    );
+    checkAuthentication();
+  }, [store]);
+
+  if (isLoading) {
+    return <Placeholder />;
   }
-
 
   return (
     <header>
@@ -64,7 +75,7 @@ const Header = () => {
               <li b-p8argd8r70="" className="nav-item">
                 {store.isAuth ? (
                   <Link
-                    to={`/profile/${store.user.id}`}
+                    to={`/`}
                     className="nav-link text-dark"
                   >
                     {store.user.email}
